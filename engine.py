@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 from gui import GUI
 from objectquad import objectQuad
 import OpenGL.GL as gl
 from glutils import *
 import glfw
+
 
 class Engine:
     window = None
@@ -20,7 +22,7 @@ class Engine:
         self.quad = objectQuad()
         self.runtime = 0.0
         self.gui.initTexture(0, "data/mmp_gurov.png")
-        self.gui.bindTexture(0)
+        self.gui.renderText(1, "data/arial.ttf", 512, u"УПОР", (255, 255, 255, 255))
 
     def setWindowHeight(self, h):
         self.gui.setWindowHeight(h)
@@ -70,6 +72,9 @@ class Engine:
             0.5 * (1 + cos(0.33 * self.runtime)), 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT | gl.GL_STENCIL_BUFFER_BIT)
         gl.glViewport(0, 0, self.gui.window_width, self.gui.window_height)
+        # 3D
+        gl.glEnable(gl.GL_DEPTH_TEST)
+        self.gui.bindTexture(0)
         self.gui.projectionMatrix = self.gui.perspective()
         if self.cam_flag:
             self.__process_camera()
@@ -94,3 +99,12 @@ class Engine:
             self.gui.sendMatrices()
             self.gui.setColor(array([0.25, 1 - 0.5 * (1 + sin(self.runtime)), 0.5 * (1 + sin(self.runtime)), 1], 'f'))
             self.quad.draw()
+        # 2D
+        gl.glDisable(gl.GL_DEPTH_TEST)
+        self.gui.bindTexture(1)
+        self.gui.projectionMatrix = identity(4, 'f')
+        self.gui.viewMatrix = identity(4, 'f')
+        self.gui.modelMatrix = scale(array([2, 2, 2], 'f'))
+        self.gui.sendMatrices()
+        self.gui.setColor(array([1, 1, 1, 0.5 * sin(self.runtime * 5)], 'f'))
+        self.quad.draw()

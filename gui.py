@@ -2,6 +2,7 @@ from shaderprogram import *
 import OpenGL.GL as gl
 from glutils import *
 from texture import Texture
+import glfont
 
 TEXT_COUNT = 64
 
@@ -113,6 +114,11 @@ class GUI:
 
     def initTexture(self, id, filename):
         self.textures[id].load(filename)
+
+    def renderText(self, id, fontname, size, text, color):
+        font = glfont.load_font(fontname, size)
+        w, h, data = glfont.render_text(font, text, color, size)
+        self.textures[id].load_raw(w, h, data)
 
     def bindTexture(self, id):
         if id == -1 or not self.textures[id].inited:
