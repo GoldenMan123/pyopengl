@@ -14,7 +14,10 @@ class Texture:
 
     def load(self, filename):
         self.width, self.height, r, t = png.Reader(filename=filename).asRGBA8()
-        arr = concatenate(array(list(r)))
+        arr = []
+        for i in r:
+            for j in i:
+                arr.append(j)
         gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture_id)
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
         gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, self.width, self.height, 0,

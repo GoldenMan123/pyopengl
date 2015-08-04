@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, '/usr/local/lib')
+
 if __name__ == '__main__':
     import sys
     import glfw
@@ -68,11 +71,13 @@ if __name__ == '__main__':
         engine.step(elapsed_time)
 
         # Swap front and back buffers
+        glfw.swap_interval(1)
         glfw.swap_buffers(window)
 
         # Poll for and process events
         glfw.poll_events()
 
-        time.sleep(0.001)
+        # Don't be egoist :)
+        time.sleep(0.01)
 
     glfw.terminate()

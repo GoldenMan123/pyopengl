@@ -78,11 +78,19 @@ class GUI:
     def setColor(self, color):
         gl.glUniform4fv(COLOR_LOCATION, 1, color)
 
+    # For PyPy compatibility
+    def cross(self, u, v):
+        r = array([0, 0, 0], 'f')
+        r[0] = u[1] * v[2] - u[2] * v[1]
+        r[1] = u[2] * v[0] - u[0] * v[2]
+        r[2] = u[0] * v[1] - u[1] * v[0]
+        return r
+
     def lookAt(self):
         f = normalize(self.cen - self.eye)
         u = normalize(self.up)
-        s = normalize(cross(f, u))
-        u = cross(s, f)
+        s = normalize(self.cross(f, u))
+        u = self.cross(s, f)
         result = identity(4, 'f')
         result[0][0] = s[0]
         result[1][0] = s[1]
