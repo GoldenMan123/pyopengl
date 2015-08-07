@@ -47,7 +47,9 @@ if __name__ == '__main__':
 
     def on_mouse(window, button, action, mods):
         if button == glfw.MOUSE_BUTTON_1 and action == glfw.PRESS:
-            engine.shoot()
+            engine.shoot_on()
+        if button == glfw.MOUSE_BUTTON_1 and action == glfw.RELEASE:
+            engine.shoot_off()
         if button == glfw.MOUSE_BUTTON_2 and action == glfw.PRESS:
             engine.camera_on()
         if button == glfw.MOUSE_BUTTON_2 and action == glfw.RELEASE:

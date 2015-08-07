@@ -4,6 +4,7 @@ from gui import GUI
 from objectquad import objectQuad
 from objectcube import objectCube
 from item import *
+from bull import Bull
 import OpenGL.GL as gl
 from glutils import *
 import glfw
@@ -34,6 +35,8 @@ class Engine:
     gui = None
     quad = None
     cube = None
+    target = None
+    shoot = False
     runtime = 0.0
     cam_dir = array([0, 0, 1], 'f')
     cam_up  = array([0, 1, 0], 'f')
@@ -77,8 +80,11 @@ class Engine:
         if self.cam_dist > 10:
             self.cam_dist = 10
 
-    def shoot(self):
-        pass
+    def shoot_on(self):
+        self.shoot = True
+
+    def shoot_off(self):
+        self.shoot = False
 
     def __process_camera(self):
         x, y = glfw.get_cursor_pos(self.window)
@@ -96,6 +102,17 @@ class Engine:
         mp = self.game.getMainPlayer()
         if self.cam_flag:
             mp.setPosition(mp.getPosition() + self.cam_dir * elapsedTime * 10)
+        # Process bulls
+        td = []
+        for i in self.game.getBulls():
+            rem_dist = sqrt(dist(i.getPosition(), i.getTarget().getPosition()))
+            bull_s = elapsedTime * 100
+            if bull_s > rem_dist:
+                td.append(i)
+            else:
+                i.setPosition(i.getPosition() + bull_s * normalize(i.getTarget().getPosition() - i.getPosition()))
+        for i in td:
+            self.game.getBulls().remove(i)
         # Process item pickup
         fi = self.game.getFreeItems()
         for i in fi:
@@ -116,6 +133,10 @@ class Engine:
                 td.append(i)
         for i in td:
             fi.remove(i)
+        # Process reload
+        self.game.getMainPlayer().setReload(self.game.getMainPlayer().getReload() + elapsedTime)
+        for i in self.game.getEnemies():
+            i.setReload(i.getReload() + elapsedTime)
 
     def step(self, elapsedTime):
         self.runtime += elapsedTime
@@ -139,6 +160,11 @@ class Engine:
                 if ang > ang_old:
                     target = i
                     ang_old = ang
+        self.target = target
+        # Process shooting
+        if self.shoot and self.target and self.game.getMainPlayer().getReload() > 0.5:
+            self.game.getBulls().add(Bull(self.game.getMainPlayer().getPosition() - self.cam_up, self.target))
+            self.game.getMainPlayer().setReload(0.0)
         # Redraw
         gl.glClearColor(0.75, 0.75, 1.0, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT | gl.GL_STENCIL_BUFFER_BIT)
@@ -189,6 +215,25 @@ class Engine:
                 self.gui.setColor(array([0, 0, 1, i.getLifetime()], 'f'))
             if i.getColor() == COLOR_GREEN:
                 self.gui.setColor(array([0, 1, 0, i.getLifetime()], 'f'))
+            self.quad.draw()
+        # Draw bulls
+        self.gui.bindTexture(0)
+        for i in sorted(self.game.getBulls(), cmp=comparer(self.gui.eye)):
+            pos_dir = normalize(i.getPosition() - self.gui.eye)
+            base_dir = array([0, 0, 1], 'f')
+            if abs(dot(base_dir, pos_dir)) > 1 - (10.0 ** -5):
+                rot_axis = array([0, 1, 0], 'f')
+                if dot(base_dir, pos_dir) > 0:
+                    rot_angle = 0
+                else:
+                    rot_angle = 180
+            else:
+                rot_axis = cross(pos_dir, base_dir)
+                rot_angle = 180 - 180 * arccos(dot(pos_dir, base_dir)) / pi
+            self.gui.modelMatrix = mul(translate(i.getPosition()),
+                rotate(rot_angle, rot_axis))
+            self.gui.setColor(array([1, 0, 0, 1], 'f'))
+            self.gui.sendMatrices()
             self.quad.draw()
         # 2D
         gl.glDisable(gl.GL_DEPTH_TEST)
