@@ -74,11 +74,7 @@ class Engine:
         glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_NORMAL)
 
     def camera_scroll(self, d):
-        self.cam_dist *= (1.25 ** -d)
-        if self.cam_dist < 1:
-            self.cam_dist = 1
-        if self.cam_dist > 10:
-            self.cam_dist = 10
+        pass
 
     def shoot_on(self):
         self.shoot = True
