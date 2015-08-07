@@ -2,7 +2,19 @@ from numpy import *
 
 
 def mul(a, b):
-        return transpose(dot(transpose(a), transpose(b)))
+    return transpose(dot(transpose(a), transpose(b)))
+
+
+def mul_v(a, b):
+    return dot(transpose(a), b)
+
+
+def v3_v4(a):
+    return array([a[0], a[1], a[2], 1.0], 'f')
+
+
+def v4_v3(a):
+    return array([a[0] / a[3], a[1] / a[3], a[2] / a[3]], 'f')
 
 
 def normalize(x):

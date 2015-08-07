@@ -2,6 +2,7 @@
 from game import Game
 from gui import GUI
 from objectquad import objectQuad
+from objectcube import objectCube
 from item import *
 import OpenGL.GL as gl
 from glutils import *
@@ -32,10 +33,10 @@ class Engine:
     game = None
     gui = None
     quad = None
+    cube = None
     runtime = 0.0
-    cam_angle_x = 0.0
-    cam_angle_y = 0.0
-    cam_dist = 2.0
+    cam_dir = array([0, 0, 1], 'f')
+    cam_up  = array([0, 1, 0], 'f')
     cam_flag = False
 
     def __init__(self, window):
@@ -43,6 +44,7 @@ class Engine:
         self.game = Game()
         self.gui = GUI()
         self.quad = objectQuad()
+        self.cube = objectCube()
         self.runtime = 0.0
         self.gui.initTexture(0, "data/item.png")
         self.gui.initTexture(1, "data/aim.png")
@@ -75,28 +77,25 @@ class Engine:
         if self.cam_dist > 10:
             self.cam_dist = 10
 
+    def shoot(self):
+        pass
+
     def __process_camera(self):
         x, y = glfw.get_cursor_pos(self.window)
         dx = x - self.gui.window_width / 2.0
         dy = y - self.gui.window_height / 2.0
-        self.cam_angle_x -= dx * 0.01
-        self.cam_angle_y -= dy * 0.01
-        if self.cam_angle_y > 1.5:
-            self.cam_angle_y = 1.5
-        if self.cam_angle_y < -1.5:
-            self.cam_angle_y = -1.5
-        while self.cam_angle_x > 2 * pi:
-            self.cam_angle_x -= 2 * pi
-        while self.cam_angle_x < - 2 * pi:
-            self.cam_angle_x +=  2 * pi
+        cam_dir = v4_v3(mul_v(rotate(-dy, cross(self.cam_dir, self.cam_up)), v3_v4(self.cam_dir)))
+        cam_up  = v4_v3(mul_v(rotate(-dy, cross(self.cam_dir, self.cam_up)), v3_v4(self.cam_up)))
+        cam_dir = v4_v3(mul_v(rotate(-dx, cam_up), v3_v4(cam_dir)))
+        self.cam_dir = normalize(cam_dir)
+        self.cam_up  = normalize(cam_up)
         glfw.set_cursor_pos(self.window, self.gui.window_width / 2, self.gui.window_height / 2)
 
     def __process_game(self, elapsedTime):
         # Move player
         mp = self.game.getMainPlayer()
-        dir = array([sin(self.cam_angle_x) * cos(self.cam_angle_y),
-            sin(self.cam_angle_y), cos(self.cam_angle_x) * cos(self.cam_angle_y)], 'f')
-        mp.setPosition(mp.getPosition() + dir * elapsedTime * 10)
+        if self.cam_flag:
+            mp.setPosition(mp.getPosition() + self.cam_dir * elapsedTime * 10)
         # Process item pickup
         fi = self.game.getFreeItems()
         for i in fi:
@@ -124,6 +123,22 @@ class Engine:
         self.__process_game(elapsedTime)
         if self.cam_flag:
             self.__process_camera()
+        # Process target
+        target = None
+        for i in self.game.getEnemies():
+            dst = dist(i.getPosition(), self.game.getMainPlayer().getPosition())
+            if dst > 10000:
+                continue
+            ang = dot(self.cam_dir, normalize(i.getPosition() - self.game.getMainPlayer().getPosition()))
+            if ang < 0.99:
+                continue
+            if not target:
+                target = i
+                ang_old = ang
+            else:
+                if ang > ang_old:
+                    target = i
+                    ang_old = ang
         # Redraw
         gl.glClearColor(0.75, 0.75, 1.0, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT | gl.GL_STENCIL_BUFFER_BIT)
@@ -133,17 +148,40 @@ class Engine:
         # Calculate view and projection matrices
         self.gui.projectionMatrix = self.gui.perspective()
         self.gui.eye = self.game.getMainPlayer().getPosition()
-        self.gui.cen = self.gui.eye + self.cam_dist * array([sin(self.cam_angle_x) * cos(self.cam_angle_y),
-            sin(self.cam_angle_y), cos(self.cam_angle_x) * cos(self.cam_angle_y)], 'f')
-        self.gui.up  = array([0, 1, 0], 'f')
+        self.gui.cen = self.gui.eye + self.cam_dir
+        self.gui.up  = self.cam_up
         self.gui.viewMatrix = self.gui.lookAt()
-        self.gui.bindTexture(0)
+        # Draw enemies
+        self.gui.bindTexture(-1)
+        self.gui.enableLighting()
+        for i in self.game.getEnemies():
+            self.gui.modelMatrix = translate(i.getPosition())
+            self.gui.sendMatrices()
+            if i == target:
+                self.gui.setColor(array([1, 0, 0, 1], 'f'))
+                target_display_pos = v4_v3(mul_v(self.gui.projectionMatrix,
+                    mul_v(self.gui.viewMatrix, v3_v4(i.getPosition()))))
+            else:
+                self.gui.setColor(array([0, 1, 0, 1], 'f'))
+            self.cube.draw()
+        self.gui.disableLighting()
         # Draw items
+        self.gui.bindTexture(0)
         free_items = sorted(self.game.getFreeItems(), cmp=comparer(self.gui.eye))
         for i in free_items:
+            pos_dir = normalize(i.getPosition() - self.gui.eye)
+            base_dir = array([0, 0, 1], 'f')
+            if abs(dot(base_dir, pos_dir)) > 1 - (10.0 ** -5):
+                rot_axis = array([0, 1, 0], 'f')
+                if dot(base_dir, pos_dir) > 0:
+                    rot_angle = 0
+                else:
+                    rot_angle = 180
+            else:
+                rot_axis = cross(pos_dir, base_dir)
+                rot_angle = 180 - 180 * arccos(dot(pos_dir, base_dir)) / pi
             self.gui.modelMatrix = mul(translate(i.getPosition()),
-                mul(rotate(self.cam_angle_x / pi * 180.0, array([0, 1, 0], 'f')),
-                rotate(- self.cam_angle_y / pi * 180.0, array([1, 0, 0], 'f'))))
+                rotate(rot_angle, rot_axis))
             self.gui.sendMatrices()
             if i.getColor() == COLOR_RED:
                 self.gui.setColor(array([1, 0, 0, i.getLifetime()], 'f'))
@@ -160,8 +198,17 @@ class Engine:
         # Draw aim
         self.gui.modelMatrix = scale(array([0.2, 0.2, 0.2], 'f'))
         self.gui.sendMatrices()
-        self.gui.setColor(array([0, 0, 0, 1], 'f'))
+        if target:
+            self.gui.setColor(array([1, 0, 0, 1], 'f'))
+        else:
+            self.gui.setColor(array([0, 0, 0, 1], 'f'))
         self.quad.draw()
+        if target:
+            self.gui.modelMatrix = mul(translate(array([target_display_pos[0] * self.gui.aspect,
+                target_display_pos[1], 0], 'f')),
+                scale(array([0.2, 0.2, 0.2], 'f')))
+            self.gui.sendMatrices()
+            self.quad.draw()
         # Items icons
         self.gui.bindTexture(0)
         self.gui.modelMatrix = mul(translate(array([self.gui.aspect - 0.1, 0.85, 0], 'f')),

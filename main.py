@@ -46,6 +46,8 @@ if __name__ == '__main__':
     glfw.set_key_callback(window, on_key)
 
     def on_mouse(window, button, action, mods):
+        if button == glfw.MOUSE_BUTTON_1 and action == glfw.PRESS:
+            engine.shoot()
         if button == glfw.MOUSE_BUTTON_2 and action == glfw.PRESS:
             engine.camera_on()
         if button == glfw.MOUSE_BUTTON_2 and action == glfw.RELEASE:

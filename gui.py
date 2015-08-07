@@ -33,7 +33,7 @@ class GUI:
         gl.glDepthFunc(gl.GL_LESS)
         gl.glClearDepth(1.0)
 
-        gl.glDisable(gl.GL_CULL_FACE)
+        gl.glEnable(gl.GL_CULL_FACE)
 
         gl.glEnable(gl.GL_BLEND)
         gl.glBlendFunc(gl.GL_SRC_ALPHA, gl.GL_ONE_MINUS_SRC_ALPHA)
@@ -49,6 +49,7 @@ class GUI:
         gl.glUniform1i(INST_FLAG_LOCATION, 0)
         gl.glUniform1i(TEXTURE_SAMPLER_LOCATION, 0)
         gl.glUniform1i(TEXTURE_FLAG_LOCATION, 0)
+        gl.glUniform1i(LIGHTING_FLAG_LOCATION, 0)
 
     def __recalcAspect(self):
         if self.window_height:
@@ -69,7 +70,7 @@ class GUI:
         self.__recalcAspect()
 
     def sendMatrices(self):
-        self.normalMatrix = linalg.inv(transpose(dot(self.viewMatrix, self.modelMatrix)))
+        self.normalMatrix = transpose(linalg.inv(mul(self.viewMatrix, self.modelMatrix)))
         gl.glUniformMatrix4fv(MODEL_MATRIX_LOCATION, 1, gl.GL_FALSE, concatenate(self.modelMatrix))
         gl.glUniformMatrix4fv(VIEW_MATRIX_LOCATION, 1, gl.GL_FALSE, concatenate(self.viewMatrix))
         gl.glUniformMatrix4fv(NORMAL_MATRIX_LOCATION, 1, gl.GL_FALSE, concatenate(self.normalMatrix))
@@ -134,3 +135,9 @@ class GUI:
         else:
             gl.glUniform1i(TEXTURE_FLAG_LOCATION, 1)
             self.textures[id].bind()
+
+    def enableLighting(self):
+        gl.glUniform1i(LIGHTING_FLAG_LOCATION, 1)
+
+    def disableLighting(self):
+        gl.glUniform1i(LIGHTING_FLAG_LOCATION, 0)
