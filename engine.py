@@ -302,3 +302,46 @@ class Engine:
             self.gui.modelMatrix = mul(translate(array([-0.1, 0, 0], 'f')), self.gui.modelMatrix)
             self.gui.sendMatrices()
             self.quad.draw()
+        # Stats
+        self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.2, 0.85, 0], 'f')),
+            scale(array([0.4, 0.2, 0.2], 'f')))
+        self.gui.setColor(array([1, 0, 0, 1], 'f'))
+        self.gui.sendMatrices()
+        self.gui.bindTexture(12)
+        self.quad.draw()
+        self.gui.modelMatrix = mul(translate(array([- self.gui.aspect +
+                0.5 + 0.1 * len(str(self.game.getMainPlayer().getPower())), 0.85, 0], 'f')),
+                scale(array([0.1, 0.2, 0.2], 'f')))
+        for i in reversed(str(self.game.getMainPlayer().getPower())):
+            self.gui.bindTexture(int(i) + 2)
+            self.gui.modelMatrix = mul(translate(array([-0.1, 0, 0], 'f')), self.gui.modelMatrix)
+            self.gui.sendMatrices()
+            self.quad.draw()
+        self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.2, 0.7, 0], 'f')),
+            scale(array([0.4, 0.2, 0.2], 'f')))
+        self.gui.setColor(array([0, 0, 1, 1], 'f'))
+        self.gui.sendMatrices()
+        self.gui.bindTexture(13)
+        self.quad.draw()
+        self.gui.modelMatrix = mul(translate(array([- self.gui.aspect +
+                0.5 + 0.1 * len(str(self.game.getMainPlayer().getDefence())), 0.7, 0], 'f')),
+                scale(array([0.1, 0.2, 0.2], 'f')))
+        for i in reversed(str(self.game.getMainPlayer().getDefence())):
+            self.gui.bindTexture(int(i) + 2)
+            self.gui.modelMatrix = mul(translate(array([-0.1, 0, 0], 'f')), self.gui.modelMatrix)
+            self.gui.sendMatrices()
+            self.quad.draw()
+        self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.2, 0.55, 0], 'f')),
+            scale(array([0.4, 0.2, 0.2], 'f')))
+        self.gui.setColor(array([0, 1, 0, 1], 'f'))
+        self.gui.sendMatrices()
+        self.gui.bindTexture(14)
+        self.quad.draw()
+        self.gui.modelMatrix = mul(translate(array([- self.gui.aspect +
+                0.5 + 0.1 * len(str(self.game.getMainPlayer().getSpeed())), 0.55, 0], 'f')),
+                scale(array([0.1, 0.2, 0.2], 'f')))
+        for i in reversed(str(self.game.getMainPlayer().getSpeed())):
+            self.gui.bindTexture(int(i) + 2)
+            self.gui.modelMatrix = mul(translate(array([-0.1, 0, 0], 'f')), self.gui.modelMatrix)
+            self.gui.sendMatrices()
+            self.quad.draw()
