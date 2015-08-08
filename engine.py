@@ -107,6 +107,14 @@ class Engine:
         # Move player
         mp = self.game.getMainPlayer()
         mp.setPosition(mp.getPosition() + self.cam_dir * elapsedTime * 10)
+        # Process health
+        for i in self.game.getEnemies():
+            i.setHealth(i.getHealth() + 0.05 * elapsedTime)
+            if i.getHealth() > 1.0:
+                i.setHealth(1.0)
+        mp.setHealth(mp.getHealth() + 0.05 * elapsedTime)
+        if mp.getHealth() > 1.0:
+            mp.setHealth(1.0)
         # Process bulls
         td = []
         for i in self.game.getBulls():
@@ -117,6 +125,12 @@ class Engine:
             else:
                 i.setPosition(i.getPosition() + bull_s * normalize(i.getTarget().getPosition() - i.getPosition()))
         for i in td:
+            target = i.getTarget()
+            target.setHealth(target.getHealth() - 0.2)
+            if target.getHealth() < 10.0 ** -5:
+                if target == mp:
+                    sys.exit(0)
+                self.game.getEnemies().remove(target)
             self.game.getBulls().remove(i)
         # Process item pickup
         fi = self.game.getFreeItems()
