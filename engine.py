@@ -241,10 +241,39 @@ class Engine:
             self.quad.draw()
         # 2D
         gl.glDisable(gl.GL_DEPTH_TEST)
-        self.gui.bindTexture(1)
         self.gui.projectionMatrix = identity(4, 'f')
         self.gui.viewMatrix = scale(array([1.0 / self.gui.aspect, 1, 1], 'f'))
+        # Target stats
+        if target:
+            str_str = str(target.getPower())
+            def_str = str(target.getDefence())
+            spd_str = str(target.getSpeed())
+            self.gui.modelMatrix = mul(translate(array([target_display_pos[0] * self.gui.aspect - 0.125
+                - (len(str_str) + len(def_str) + len(spd_str)) * 0.025,
+                target_display_pos[1] + 0.15, 0], 'f')),
+                scale(array([0.05, 0.1, 0.1], 'f')))
+            self.gui.setColor(array([1, 0, 0, 1], 'f'))
+            for i in str_str:
+                self.gui.bindTexture(int(i) + 2)
+                self.gui.modelMatrix = mul(translate(array([0.05, 0, 0], 'f')), self.gui.modelMatrix)
+                self.gui.sendMatrices()
+                self.quad.draw()
+            self.gui.setColor(array([0, 0, 1, 1], 'f'))
+            self.gui.modelMatrix = mul(translate(array([0.1, 0, 0], 'f')), self.gui.modelMatrix)
+            for i in def_str:
+                self.gui.bindTexture(int(i) + 2)
+                self.gui.modelMatrix = mul(translate(array([0.05, 0, 0], 'f')), self.gui.modelMatrix)
+                self.gui.sendMatrices()
+                self.quad.draw()
+            self.gui.setColor(array([0, 1, 0, 1], 'f'))
+            self.gui.modelMatrix = mul(translate(array([0.1, 0, 0], 'f')), self.gui.modelMatrix)
+            for i in spd_str:
+                self.gui.bindTexture(int(i) + 2)
+                self.gui.modelMatrix = mul(translate(array([0.05, 0, 0], 'f')), self.gui.modelMatrix)
+                self.gui.sendMatrices()
+                self.quad.draw()
         # Draw aim
+        self.gui.bindTexture(1)
         self.gui.modelMatrix = scale(array([0.2, 0.2, 0.2], 'f'))
         self.gui.sendMatrices()
         if target:
