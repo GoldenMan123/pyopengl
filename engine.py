@@ -273,6 +273,21 @@ class Engine:
                 self.gui.modelMatrix = mul(translate(array([0.05, 0, 0], 'f')), self.gui.modelMatrix)
                 self.gui.sendMatrices()
                 self.quad.draw()
+        # Target health
+        if target:
+            self.gui.bindTexture(-1)
+            self.gui.modelMatrix = mul(translate(array([target_display_pos[0] * self.gui.aspect,
+                target_display_pos[1] + 0.2, 0], 'f')),
+                scale(array([0.4, 0.025, 1], 'f')))
+            self.gui.sendMatrices()
+            self.gui.setColor(array([0, 0, 0.25, 1], 'f'))
+            self.quad.draw()
+            self.gui.modelMatrix = mul(translate(array([target_display_pos[0] * self.gui.aspect + 0.2 *
+                (target.getHealth() - 1.0), target_display_pos[1] + 0.2, 0], 'f')),
+                scale(array([0.4 * target.getHealth(), 0.025, 1], 'f')))
+            self.gui.sendMatrices()
+            self.gui.setColor(array([0, 0, 1.0, 1], 'f'))
+            self.quad.draw()
         # Draw aim
         self.gui.bindTexture(1)
         self.gui.modelMatrix = scale(array([0.2, 0.2, 0.2], 'f'))
