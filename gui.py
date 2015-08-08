@@ -46,7 +46,6 @@ class GUI:
         for i in range(TEXT_COUNT):
             self.textures.append(Texture(tex_ids[i]))
 
-        gl.glUniform1i(INST_FLAG_LOCATION, 0)
         gl.glUniform1i(TEXTURE_SAMPLER_LOCATION, 0)
         gl.glUniform1i(TEXTURE_FLAG_LOCATION, 0)
         gl.glUniform1i(LIGHTING_FLAG_LOCATION, 0)

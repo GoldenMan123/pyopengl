@@ -30,6 +30,7 @@ if __name__ == '__main__':
     engine = Engine(window)
     engine.setWindowHeight(height)
     engine.setWindowWidth(width)
+    engine.camera_on()
 
     def on_resize(window, width, height):
         engine.setWindowWidth(width)
@@ -51,9 +52,7 @@ if __name__ == '__main__':
         if button == glfw.MOUSE_BUTTON_1 and action == glfw.RELEASE:
             engine.shoot_off()
         if button == glfw.MOUSE_BUTTON_2 and action == glfw.PRESS:
-            engine.camera_on()
-        if button == glfw.MOUSE_BUTTON_2 and action == glfw.RELEASE:
-            engine.camera_off()
+            engine.camera_switch()
 
     glfw.set_mouse_button_callback(window, on_mouse)
 

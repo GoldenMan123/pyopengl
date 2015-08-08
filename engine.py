@@ -53,6 +53,9 @@ class Engine:
         self.gui.initTexture(1, "data/aim.png")
         for i in range(10):
             self.gui.renderText(2 + i, "data/mono.ttf", 256, str(i), (255, 255, 255, 255))
+        self.gui.renderText(12, "data/mono.ttf", 256, "STR:", (255, 255, 255, 255))
+        self.gui.renderText(13, "data/mono.ttf", 256, "DEF:", (255, 255, 255, 255))
+        self.gui.renderText(14, "data/mono.ttf", 256, "SPD:", (255, 255, 255, 255))
 
     def setWindowHeight(self, h):
         self.gui.setWindowHeight(h)
@@ -72,6 +75,12 @@ class Engine:
     def camera_off(self):
         self.cam_flag = False
         glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_NORMAL)
+
+    def camera_switch(self):
+        if self.cam_flag:
+            self.camera_off()
+        else:
+            self.camera_on()
 
     def camera_scroll(self, d):
         pass
@@ -96,8 +105,7 @@ class Engine:
     def __process_game(self, elapsedTime):
         # Move player
         mp = self.game.getMainPlayer()
-        if self.cam_flag:
-            mp.setPosition(mp.getPosition() + self.cam_dir * elapsedTime * 10)
+        mp.setPosition(mp.getPosition() + self.cam_dir * elapsedTime * 10)
         # Process bulls
         td = []
         for i in self.game.getBulls():

@@ -65,7 +65,6 @@ class GLObject:
         gl.glBindVertexArray(0)
 
     def draw(self):
-        gl.glUniform1i(INST_FLAG_LOCATION, 0)
         gl.glBindVertexArray(self.vao)
         gl.glDrawElements(gl.GL_TRIANGLES, len(self.pIndices), gl.GL_UNSIGNED_INT, None)
         gl.glBindVertexArray(0)
