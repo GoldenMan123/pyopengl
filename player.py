@@ -9,7 +9,8 @@ class Player:
     power = 1
     defence = 1
     speed = 1
-    reload = 0
+    reload = 0.0
+    health = 1.0
 
     def __init__(self):
         pass
@@ -79,3 +80,9 @@ class Player:
 
     def setReload(self, reload):
         self.reload = reload
+
+    def getHealth(self):
+        return self.health
+
+    def setHealth(self, health):
+        self.health = health

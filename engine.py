@@ -56,6 +56,7 @@ class Engine:
         self.gui.renderText(12, "data/mono.ttf", 256, "STR:", (255, 255, 255, 255))
         self.gui.renderText(13, "data/mono.ttf", 256, "DEF:", (255, 255, 255, 255))
         self.gui.renderText(14, "data/mono.ttf", 256, "SPD:", (255, 255, 255, 255))
+        self.gui.renderText(15, "data/mono.ttf", 256, "SHIELD", (255, 255, 255, 255))
 
     def setWindowHeight(self, h):
         self.gui.setWindowHeight(h)
@@ -374,3 +375,22 @@ class Engine:
             self.gui.modelMatrix = mul(translate(array([-0.1, 0, 0], 'f')), self.gui.modelMatrix)
             self.gui.sendMatrices()
             self.quad.draw()
+        # Health
+        self.gui.bindTexture(-1)
+        self.gui.modelMatrix = mul(translate(array([0, -1 + 0.05, 0], 'f')),
+            scale(array([2 * self.gui.aspect, 0.1, 1], 'f')))
+        self.gui.sendMatrices()
+        self.gui.setColor(array([0, 0, 0.25, 1], 'f'))
+        self.quad.draw()
+        self.gui.modelMatrix = mul(translate(array([self.gui.aspect *
+            (self.game.getMainPlayer().getHealth() - 1.0), -1 + 0.05, 0], 'f')),
+            scale(array([2 * self.gui.aspect * self.game.getMainPlayer().getHealth(), 0.1, 1], 'f')))
+        self.gui.sendMatrices()
+        self.gui.setColor(array([0, 0, 1.0, 1], 'f'))
+        self.quad.draw()
+        self.gui.bindTexture(15)
+        self.gui.modelMatrix = mul(translate(array([0, -1 + 0.05, 0], 'f')),
+            scale(array([0.3, 0.1, 1], 'f')))
+        self.gui.sendMatrices()
+        self.gui.setColor(array([1.0, 1.0, 1.0, 1], 'f'))
+        self.quad.draw()
