@@ -1,4 +1,3 @@
-from numpy import *
 from item import *
 from glutils import *
 from random import *

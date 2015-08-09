@@ -140,7 +140,8 @@ class Engine:
             if target.getHealth() < 10.0 ** -5:
                 if target == mp:
                     sys.exit(0)
-                self.game.getEnemies().remove(target)
+                if target in self.game.getEnemies():
+                    self.game.getEnemies().remove(target)
             self.game.getBulls().remove(i)
         # Process item pickup
         fi = self.game.getFreeItems()
@@ -205,7 +206,7 @@ class Engine:
                 self.target, pwr))
             self.game.getMainPlayer().setReload(0.0)
         # Redraw
-        gl.glClearColor(0.75, 0.75, 1.0, 1.0)
+        gl.glClearColor(0.05, 0.05, 0.1, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT | gl.GL_STENCIL_BUFFER_BIT)
         gl.glViewport(0, 0, self.gui.window_width, self.gui.window_height)
         # 3D
@@ -329,7 +330,7 @@ class Engine:
         if target:
             self.gui.setColor(array([1, 0, 0, 1], 'f'))
         else:
-            self.gui.setColor(array([0, 0, 0, 1], 'f'))
+            self.gui.setColor(array([1, 1, 1, 1], 'f'))
         self.quad.draw()
         if target:
             self.gui.modelMatrix = mul(translate(array([target_display_pos[0] * self.gui.aspect,
