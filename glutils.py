@@ -8,6 +8,18 @@ def dist(x, y):
     return r
 
 
+def comparer(pos):
+    def _cmp(x, y):
+        xr = dist(x.getPosition(), pos)
+        yr = dist(y.getPosition(), pos)
+        if xr < yr:
+            return 1
+        if xr > yr:
+            return -1
+        return 0
+    return _cmp
+
+
 def mul(a, b):
     return transpose(dot(transpose(a), transpose(b)))
 
