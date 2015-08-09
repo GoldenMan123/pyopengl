@@ -1,6 +1,13 @@
 from numpy import *
 
 
+def dist(x, y):
+    r = 0.0
+    for i in range(3):
+        r += (x[i] - y[i]) ** 2
+    return r
+
+
 def mul(a, b):
     return transpose(dot(transpose(a), transpose(b)))
 

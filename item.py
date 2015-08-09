@@ -9,9 +9,10 @@ class Item:
     count = 1
     lifetime = 1.0
 
-    def __init__(self, position, color):
+    def __init__(self, position, color, count):
         self.position = position
         self.color = color
+        self.count = count
 
     def getPosition(self):
         return self.position

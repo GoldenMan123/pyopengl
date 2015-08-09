@@ -11,6 +11,7 @@ class Player:
     speed = 1
     reload = 0.0
     health = 1.0
+    stamina = 0.0
 
     def __init__(self):
         pass
@@ -86,3 +87,12 @@ class Player:
 
     def setHealth(self, health):
         self.health = health
+
+    def getStamina(self):
+        return self.stamina
+
+    def setStamina(self, stamina):
+        self.stamina = stamina
+
+    def addStamina(self, stamina):
+        self.stamina += stamina

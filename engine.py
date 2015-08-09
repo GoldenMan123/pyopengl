@@ -8,13 +8,7 @@ from bull import Bull
 import OpenGL.GL as gl
 from glutils import *
 import glfw
-
-
-def dist(x, y):
-    r = 0.0
-    for i in range(3):
-        r += (x[i] - y[i]) ** 2
-    return r
+import sys
 
 
 def comparer(pos):
@@ -106,7 +100,18 @@ class Engine:
     def __process_game(self, elapsedTime):
         # Move player
         mp = self.game.getMainPlayer()
-        mp.setPosition(mp.getPosition() + self.cam_dir * elapsedTime * 10)
+        self.game.getMainPlayer().addStamina(-elapsedTime)
+        if self.game.getMainPlayer().getStamina() < 0:
+            self.game.getMainPlayer().setStamina(0.0)
+        if self.game.getMainPlayer().getStamina() < 10.0 ** -5:
+            if self.game.getMainPlayer().getGreenItems():
+                self.game.getMainPlayer().addStamina(1.0)
+                self.game.getMainPlayer().addGreenItems(-1)
+        if self.game.getMainPlayer().getStamina() > 0:
+            mult = 2
+        else:
+            mult = 1
+        mp.setPosition(mp.getPosition() + self.cam_dir * elapsedTime * (1.25 ** mp.getSpeed()) * mult)
         # Process health
         for i in self.game.getEnemies():
             i.setHealth(i.getHealth() + 0.05 * elapsedTime)
@@ -126,7 +131,12 @@ class Engine:
                 i.setPosition(i.getPosition() + bull_s * normalize(i.getTarget().getPosition() - i.getPosition()))
         for i in td:
             target = i.getTarget()
-            target.setHealth(target.getHealth() - 0.2)
+            if target.getBlueItems():
+                t_def = target.getDefence() * 2
+                target.addBlueItems(-1)
+            else:
+                t_def = target.getDefence()
+            target.setHealth(target.getHealth() - 0.2 * (2 ** (i.getPower() - t_def)))
             if target.getHealth() < 10.0 ** -5:
                 if target == mp:
                     sys.exit(0)
@@ -152,10 +162,14 @@ class Engine:
                 td.append(i)
         for i in td:
             fi.remove(i)
+        # Process item spawn
+        self.game.process_item_spawn()
         # Process reload
         self.game.getMainPlayer().setReload(self.game.getMainPlayer().getReload() + elapsedTime)
         for i in self.game.getEnemies():
             i.setReload(i.getReload() + elapsedTime)
+        # Process AI
+        self.game.process_ai(elapsedTime)
 
     def step(self, elapsedTime):
         self.runtime += elapsedTime
@@ -182,7 +196,13 @@ class Engine:
         self.target = target
         # Process shooting
         if self.shoot and self.target and self.game.getMainPlayer().getReload() > 0.5:
-            self.game.getBulls().add(Bull(self.game.getMainPlayer().getPosition() - self.cam_up, self.target))
+            if self.game.getMainPlayer().getRedItems():
+                pwr = self.game.getMainPlayer().getPower() * 2
+                self.game.getMainPlayer().addRedItems(-1)
+            else:
+                pwr = self.game.getMainPlayer().getPower()
+            self.game.getBulls().add(Bull(self.game.getMainPlayer().getPosition() - self.cam_up,
+                self.target, pwr))
             self.game.getMainPlayer().setReload(0.0)
         # Redraw
         gl.glClearColor(0.75, 0.75, 1.0, 1.0)
