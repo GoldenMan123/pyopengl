@@ -3,6 +3,7 @@ from glutils import *
 from random import *
 from player import Player
 from bull import Bull
+from event import *
 import sys
 
 
@@ -12,15 +13,23 @@ class Game:
     enemies = set()
     bulls = set()
     sp = 10
+    wave_timer_flag = False
+    wave_timer_time = 0.0
+    event_delay = 0.0
+    event_list = []
 
     def __init__(self):
-        for i in range(0):
-            p = Player()
-            rx = random() * 100 - 50
-            ry = random() * 100 - 50
-            rz = random() * 100 - 50
-            p.setPosition(array([rx, ry, rz], 'f'))
-            self.enemies.add(p)
+        self.event_list.append(Event(EVENT_WAVE_TIMER, 10.0))
+        self.event_list.append(Event(EVENT_ENEMY, (1, 1, 1)))
+        self.event_list.append(Event(EVENT_DELAY, 10.0))
+        self.event_list.append(Event(EVENT_ENEMY, (1, 1, 1)))
+        self.event_list.append(Event(EVENT_DELAY, 10.0))
+        self.event_list.append(Event(EVENT_ENEMY, (1, 1, 1)))
+        self.event_list.append(Event(EVENT_DELAY, 10.0))
+        self.event_list.append(Event(EVENT_ENEMY, (1, 1, 1)))
+
+    def __rand_angles(self):
+        return (random() * 2.0 * pi, random() * 2.0 * pi - pi)
 
     def getFreeItems(self):
         return self.free_items
@@ -129,6 +138,41 @@ class Game:
         for i in self.enemies:
             i.setReload(i.getReload() + elapsedTime)
 
+    def __process_waves(self, elapsedTime):
+        if self.event_delay > 0:
+            self.event_delay -= elapsedTime
+            return
+        if self.wave_timer_flag:
+            self.wave_timer_time -= elapsedTime
+            if self.wave_timer_time < 0:
+                self.wave_timer_flag = False
+        else:
+            if len(self.event_list):
+                e = self.event_list[0]
+                if e.getType() == EVENT_ENEMY:
+                    p = Player(*e.getObject())
+                    phi, psi = self.__rand_angles()
+                    p.setPosition(150.0 * array([sin(phi) * cos(psi), sin(psi), cos(phi) * cos(psi)], 'f')
+                        + self.player_main.getPosition())
+                    self.enemies.add(p)
+                    self.event_list.remove(e)
+                else:
+                    if e.getType() == EVENT_DELAY:
+                        self.event_delay = e.getObject()
+                        self.event_list.remove(e)
+                    else:
+                        if e.getType() == EVENT_WAVE_TIMER and len(self.enemies) == 0:
+                            self.wave_timer_flag = True
+                            self.wave_timer_time = e.getObject()
+                            self.sp += 1
+                            self.event_list.remove(e)
+
+    def getWaveTimerFlag(self):
+        return self.wave_timer_flag
+
+    def getWaveTimerTime(self):
+        return self.wave_timer_time
+
     def process(self, elapsedTime):
         self.__process_health(elapsedTime)
         self.__process_bulls(elapsedTime)
@@ -137,6 +181,7 @@ class Game:
         self.__process_item_spawn()
         self.__process_reload(elapsedTime)
         self.__process_ai(elapsedTime)
+        self.__process_waves(elapsedTime)
 
     def move(self, elapsedTime, direction):
         self.player_main.addStamina(-elapsedTime)

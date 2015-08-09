@@ -13,8 +13,10 @@ class Player:
     health = 1.0
     stamina = 0.0
 
-    def __init__(self):
-        pass
+    def __init__(self, power = 1, defence = 1, speed = 1):
+        self.power = power
+        self.defence = defence
+        self.speed = speed
 
     def getPosition(self):
         return self.position

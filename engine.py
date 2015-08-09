@@ -123,7 +123,8 @@ class Engine:
         self.gui.bindTexture(-1)
         self.gui.enableLighting()
         for i in self.game.getEnemies():
-            self.gui.modelMatrix = translate(i.getPosition())
+            self.gui.modelMatrix = mul(translate(i.getPosition()),
+                scale(array([3, 3, 3], 'f')))
             self.gui.sendMatrices()
             if i == self.target:
                 self.gui.setColor(array([1, 0, 0, 1], 'f'))
@@ -459,4 +460,5 @@ class Engine:
         if self.game.getSP():
             self.__draw_update_buttons()
         self.__draw_player_health()
-        self.__draw_wave_timer(76.34 - self.runtime)
+        if self.game.getWaveTimerFlag():
+            self.__draw_wave_timer(self.game.getWaveTimerTime())
