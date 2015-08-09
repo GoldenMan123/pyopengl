@@ -40,6 +40,8 @@ class Engine:
         self.gui.renderText(14, "data/mono.ttf", 256, "SPD:", (255, 255, 255, 255))
         self.gui.renderText(15, "data/mono.ttf", 256, "SHIELD", (255, 255, 255, 255))
         self.gui.renderText(16, "data/mono.ttf", 256, "+", (255, 255, 255, 255))
+        self.gui.renderText(17, "data/mono.ttf", 256, "NEXT WAVE", (255, 255, 255, 255))
+        self.gui.renderText(18, "data/mono.ttf", 256, ":", (255, 255, 255, 255))
 
     def setWindowHeight(self, h):
         self.gui.setWindowHeight(h)
@@ -78,14 +80,17 @@ class Engine:
                 x = float(x) / self.gui.getWindowWidth() * 2.0 * self.gui.aspect - self.gui.aspect
                 y = 1.0 - float(y) / self.gui.getWindowHeight() * 2.0
                 if x > - self.gui.aspect + 0.6 and x < - self.gui.aspect + 0.7 and y > 0.8 and y < 0.9:
-                    self.game.getMainPlayer().addPower(1)
-                    self.game.decSP()
+                    if self.game.getMainPlayer().getPower() < 10:
+                        self.game.getMainPlayer().addPower(1)
+                        self.game.decSP()
                 if x > - self.gui.aspect + 0.6 and x < - self.gui.aspect + 0.7 and y > 0.65 and y < 0.75:
-                    self.game.getMainPlayer().addDefence(1)
-                    self.game.decSP()
+                    if self.game.getMainPlayer().getDefence() < 10:
+                        self.game.getMainPlayer().addDefence(1)
+                        self.game.decSP()
                 if x > - self.gui.aspect + 0.6 and x < - self.gui.aspect + 0.7 and y > 0.5 and y < 0.6:
-                    self.game.getMainPlayer().addSpeed(1)
-                    self.game.decSP()
+                    if self.game.getMainPlayer().getSpeed() < 10:
+                        self.game.getMainPlayer().addSpeed(1)
+                        self.game.decSP()
 
     def shoot_off(self):
         self.shoot = False
@@ -332,21 +337,24 @@ class Engine:
 
     def __draw_update_buttons(self):
         self.gui.bindTexture(16)
-        self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.65, 0.85, 0], 'f')),
-            scale(array([0.1, 0.2, 0.2], 'f')))
-        self.gui.sendMatrices()
-        self.gui.setColor(array([1, 0, 0, sin(10 * self.runtime) * 0.25 + 0.75], 'f'))
-        self.quad.draw()
-        self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.65, 0.7, 0], 'f')),
-            scale(array([0.1, 0.2, 0.2], 'f')))
-        self.gui.sendMatrices()
-        self.gui.setColor(array([0, 0, 1, sin(10 * self.runtime) * 0.25 + 0.75], 'f'))
-        self.quad.draw()
-        self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.65, 0.55, 0], 'f')),
-            scale(array([0.1, 0.2, 0.2], 'f')))
-        self.gui.sendMatrices()
-        self.gui.setColor(array([0, 1, 0, sin(10 * self.runtime) * 0.25 + 0.75], 'f'))
-        self.quad.draw()
+        if self.game.getMainPlayer().getPower() < 10:
+            self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.65, 0.85, 0], 'f')),
+                scale(array([0.1, 0.2, 0.2], 'f')))
+            self.gui.sendMatrices()
+            self.gui.setColor(array([1, 0, 0, sin(10 * self.runtime) * 0.25 + 0.75], 'f'))
+            self.quad.draw()
+        if self.game.getMainPlayer().getDefence() < 10:
+            self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.65, 0.7, 0], 'f')),
+                scale(array([0.1, 0.2, 0.2], 'f')))
+            self.gui.sendMatrices()
+            self.gui.setColor(array([0, 0, 1, sin(10 * self.runtime) * 0.25 + 0.75], 'f'))
+            self.quad.draw()
+        if self.game.getMainPlayer().getSpeed() < 10:
+            self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.65, 0.55, 0], 'f')),
+                scale(array([0.1, 0.2, 0.2], 'f')))
+            self.gui.sendMatrices()
+            self.gui.setColor(array([0, 1, 0, sin(10 * self.runtime) * 0.25 + 0.75], 'f'))
+            self.quad.draw()
 
     def __draw_player_health(self):
         self.gui.bindTexture(-1)
@@ -367,6 +375,47 @@ class Engine:
         self.gui.sendMatrices()
         self.gui.setColor(array([1.0, 1.0, 1.0, 1], 'f'))
         self.quad.draw()
+
+    def __draw_wave_timer(self, time):
+        self.gui.bindTexture(17)
+        self.gui.modelMatrix = mul(translate(array([0, 0.85, 0], 'f')),
+            scale(array([1.0, 0.2, 0.2], 'f')))
+        self.gui.sendMatrices()
+        self.gui.setColor(array([1.0, 1.0, 0.0, 1], 'f'))
+        self.quad.draw()
+        if time < 0:
+            time_s = 0
+            time_m = 0
+        else:
+            time_s = (int(time) + 1) % 60
+            time_m = (int(time) + 1) / 60
+        time_s1 = time_s / 10
+        time_s2 = time_s % 10
+        time_m1 = time_m / 10
+        time_m2 = time_m % 10
+        self.gui.modelMatrix = mul(translate(array([-0.25, 0.65, 0], 'f')),
+            scale(array([0.1, 0.2, 0.2], 'f')))
+        self.gui.bindTexture(2 + time_m1)
+        self.gui.modelMatrix = mul(translate(array([0.1, 0, 0], 'f')), self.gui.modelMatrix)
+        self.gui.sendMatrices()
+        self.quad.draw()
+        self.gui.bindTexture(2 + time_m2)
+        self.gui.modelMatrix = mul(translate(array([0.1, 0, 0], 'f')), self.gui.modelMatrix)
+        self.gui.sendMatrices()
+        self.quad.draw()
+        self.gui.bindTexture(18)
+        self.gui.modelMatrix = mul(translate(array([0.1, 0, 0], 'f')), self.gui.modelMatrix)
+        self.gui.sendMatrices()
+        self.quad.draw()
+        self.gui.bindTexture(2 + time_s1)
+        self.gui.modelMatrix = mul(translate(array([0.1, 0, 0], 'f')), self.gui.modelMatrix)
+        self.gui.sendMatrices()
+        self.quad.draw()
+        self.gui.bindTexture(2 + time_s2)
+        self.gui.modelMatrix = mul(translate(array([0.1, 0, 0], 'f')), self.gui.modelMatrix)
+        self.gui.sendMatrices()
+        self.quad.draw()
+
 
     def step(self, elapsedTime):
         self.runtime += elapsedTime
@@ -410,3 +459,4 @@ class Engine:
         if self.game.getSP():
             self.__draw_update_buttons()
         self.__draw_player_health()
+        self.__draw_wave_timer(76.34 - self.runtime)

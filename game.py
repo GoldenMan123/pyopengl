@@ -47,7 +47,7 @@ class Game:
                 td.append(i)
         for i in td:
             self.free_items.remove(i)
-        while len(self.free_items) < 10:
+        while len(self.free_items) < 15:
             r = randint(0, 2)
             clr = COLOR_RED
             if r == 1:
