@@ -301,12 +301,6 @@ class Engine:
             self.gui.modelMatrix = mul(translate(array([-0.1, 0, 0], 'f')), self.gui.modelMatrix)
             self.gui.sendMatrices()
             self.quad.draw()
-        if self.game.getSP():
-            self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.65, 0.85, 0], 'f')),
-                scale(array([0.1, 0.2, 0.2], 'f')))
-            self.gui.sendMatrices()
-            self.gui.bindTexture(16)
-            self.quad.draw()
         self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.2, 0.7, 0], 'f')),
             scale(array([0.4, 0.2, 0.2], 'f')))
         self.gui.setColor(array([0, 0, 1, 1], 'f'))
@@ -320,12 +314,6 @@ class Engine:
             self.gui.bindTexture(int(i) + 2)
             self.gui.modelMatrix = mul(translate(array([-0.1, 0, 0], 'f')), self.gui.modelMatrix)
             self.gui.sendMatrices()
-            self.quad.draw()
-        if self.game.getSP():
-            self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.65, 0.7, 0], 'f')),
-                scale(array([0.1, 0.2, 0.2], 'f')))
-            self.gui.sendMatrices()
-            self.gui.bindTexture(16)
             self.quad.draw()
         self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.2, 0.55, 0], 'f')),
             scale(array([0.4, 0.2, 0.2], 'f')))
@@ -343,10 +331,21 @@ class Engine:
             self.quad.draw()
 
     def __draw_update_buttons(self):
+        self.gui.bindTexture(16)
+        self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.65, 0.85, 0], 'f')),
+            scale(array([0.1, 0.2, 0.2], 'f')))
+        self.gui.sendMatrices()
+        self.gui.setColor(array([1, 0, 0, sin(10 * self.runtime) * 0.25 + 0.75], 'f'))
+        self.quad.draw()
+        self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.65, 0.7, 0], 'f')),
+            scale(array([0.1, 0.2, 0.2], 'f')))
+        self.gui.sendMatrices()
+        self.gui.setColor(array([0, 0, 1, sin(10 * self.runtime) * 0.25 + 0.75], 'f'))
+        self.quad.draw()
         self.gui.modelMatrix = mul(translate(array([- self.gui.aspect + 0.65, 0.55, 0], 'f')),
             scale(array([0.1, 0.2, 0.2], 'f')))
         self.gui.sendMatrices()
-        self.gui.bindTexture(16)
+        self.gui.setColor(array([0, 1, 0, sin(10 * self.runtime) * 0.25 + 0.75], 'f'))
         self.quad.draw()
 
     def __draw_player_health(self):
