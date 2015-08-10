@@ -41,7 +41,7 @@ def normalize(x):
     norm = 0.0
     for i in result:
         norm += i * i
-    if norm > 0:
+    if norm > 10.0 ** -5:
         for i in range(len(result)):
             result[i] /= sqrt(norm)
     return result

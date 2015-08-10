@@ -5,10 +5,121 @@ enemy 0 0 1
 delay 5
 enemy 0 0 1
 delay 5
-timer 10
+timer 30
 enemy 0 0 1
 enemy 0 0 1
 enemy 0 0 1
-timer 10
+timer 30
+enemy 0 0 1
+enemy 0 0 1
+enemy 0 0 1
+delay 15
+enemy 0 0 1
+enemy 0 0 1
+enemy 0 0 1
+delay 15
+enemy 0 0 1
+enemy 0 0 1
+enemy 0 0 1
+timer 30
 enemy 1 1 1
-timer 10
+delay 10
+enemy 1 1 1
+enemy 1 1 1
+delay 10
+enemy 1 1 1
+enemy 1 1 1
+enemy 1 1 1
+timer 30
+enemy 1 5 1
+delay 10
+enemy 1 5 1
+delay 10
+enemy 1 5 1
+timer 30
+enemy 3 3 3
+enemy 3 3 3
+delay 10
+enemy 3 5 3
+delay 10
+enemy 5 1 3
+timer 30
+enemy 5 5 5
+enemy 5 5 5
+delay 10
+enemy 5 5 5
+enemy 5 5 5
+delay 10
+enemy 5 5 5
+enemy 5 5 5
+delay 10
+enemy 5 5 5
+timer 30
+enemy 7 5 5
+enemy 5 7 5
+delay 10
+enemy 6 6 5
+delay 10
+enemy 6 6 6
+enemy 6 6 6
+timer 30
+enemy 7 6 7
+enemy 7 6 7
+enemy 6 6 6
+delay 10
+enemy 10 1 1
+delay 10
+enemy 1 10 1
+timer 30
+enemy 8 8 8
+enemy 8 8 8
+delay 10
+enemy 8 8 8
+enemy 8 8 8
+enemy 8 8 8
+delay 10
+enemy 8 8 8
+enemy 8 8 8
+enemy 8 8 8
+timer 30
+enemy 8 8 8
+enemy 8 8 8
+enemy 8 8 8
+delay 10
+enemy 8 8 8
+enemy 8 8 8
+enemy 8 8 8
+delay 10
+enemy 8 8 8
+enemy 8 8 8
+enemy 8 8 8
+timer 30
+enemy 9 9 9
+delay 10
+enemy 9 9 9
+enemy 9 9 9
+delay 10
+enemy 9 9 9
+enemy 9 9 9
+enemy 9 9 9
+timer 30
+enemy 9 9 9
+enemy 9 9 9
+enemy 9 9 9
+delay 10
+enemy 9 9 9
+enemy 9 9 9
+enemy 9 9 9
+delay 10
+enemy 9 9 9
+enemy 9 9 9
+enemy 9 9 9
+timer 30
+enemy 10 10 10
+delay 10
+enemy 10 10 10
+delay 10
+enemy 10 10 10
+delay 10
+enemy 10 10 10
+timer 30

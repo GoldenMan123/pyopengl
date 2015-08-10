@@ -42,6 +42,7 @@ class Engine:
         self.gui.renderText(16, "data/mono.ttf", 256, "+", (255, 255, 255, 255))
         self.gui.renderText(17, "data/mono.ttf", 256, "NEXT WAVE", (255, 255, 255, 255))
         self.gui.renderText(18, "data/mono.ttf", 256, ":", (255, 255, 255, 255))
+        self.gui.initTexture(19, "data/radar.png")
 
     def setWindowHeight(self, h):
         self.gui.setWindowHeight(h)
@@ -417,6 +418,31 @@ class Engine:
         self.gui.sendMatrices()
         self.quad.draw()
 
+    def __draw_radar(self):
+        view = self.gui.lookAt()
+        self.gui.bindTexture(19)
+        self.gui.setColor(array([1, 0, 0, 1], 'f'))
+        for i in self.game.getEnemies():
+            pos = normalize(v4_v3(mul_v(view, v3_v4(i.getPosition()))))
+            if pos[2] < -0.9:
+                continue
+            angle = arctan2(pos[1], pos[0])
+            if angle > pi / 4:
+                if angle < 3 * pi / 4:
+                    self.gui.modelMatrix = translate(array([cos(angle) * self.gui.aspect, 1 - 0.04, 0], 'f'))
+                else:
+                    self.gui.modelMatrix = translate(array([-self.gui.aspect + 0.04, sin(angle), 0], 'f'))
+            else:
+                if angle > - pi / 4:
+                    self.gui.modelMatrix = translate(array([self.gui.aspect - 0.04, sin(angle), 0], 'f'))
+                else:
+                    if angle < - 3 * pi / 4:
+                        self.gui.modelMatrix = translate(array([-self.gui.aspect + 0.04, sin(angle), 0], 'f'))
+                    else:
+                        self.gui.modelMatrix = translate(array([cos(angle) * self.gui.aspect, -1 + 0.04, 0], 'f'))
+            self.gui.modelMatrix = mul(self.gui.modelMatrix, scale(array([0.1, 0.1, 0.1], 'f')))
+            self.gui.sendMatrices()
+            self.quad.draw()
 
     def step(self, elapsedTime):
         self.runtime += elapsedTime
@@ -462,3 +488,4 @@ class Engine:
         self.__draw_player_health()
         if self.game.getWaveTimerFlag():
             self.__draw_wave_timer(self.game.getWaveTimerTime())
+        self.__draw_radar()

@@ -19,7 +19,9 @@ class Game:
     event_list = []
 
     def __init__(self):
-        self.player_main.addGreenItems(100)
+        self.player_main.addRedItems(10)
+        self.player_main.addBlueItems(10)
+        self.player_main.addGreenItems(10)
         f = open("event.list", "r").read()
         s1 = f.split('\n')
         s2 = []
@@ -165,7 +167,7 @@ class Game:
                 if e.getType() == EVENT_ENEMY:
                     p = Player(*e.getObject())
                     phi, psi = self.__rand_angles()
-                    p.setPosition(150.0 * array([sin(phi) * cos(psi), sin(psi), cos(phi) * cos(psi)], 'f')
+                    p.setPosition(200.0 * array([sin(phi) * cos(psi), sin(psi), cos(phi) * cos(psi)], 'f')
                         + self.player_main.getPosition())
                     self.enemies.add(p)
                     self.event_list.remove(e)
@@ -197,7 +199,7 @@ class Game:
         self.__process_waves(elapsedTime)
 
     def move(self, elapsedTime, direction):
-        self.player_main.addStamina(-elapsedTime)
+        self.player_main.addStamina(-elapsedTime * 0.1)
         if self.player_main.getStamina() < 0:
             self.player_main.setStamina(0.0)
         if self.player_main.getStamina() < 10.0 ** -5:
