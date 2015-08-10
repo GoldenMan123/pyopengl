@@ -12,21 +12,34 @@ class Game:
     player_main = Player()
     enemies = set()
     bulls = set()
-    sp = 10
+    sp = 0
     wave_timer_flag = False
     wave_timer_time = 0.0
     event_delay = 0.0
     event_list = []
 
     def __init__(self):
-        self.event_list.append(Event(EVENT_WAVE_TIMER, 10.0))
-        self.event_list.append(Event(EVENT_ENEMY, (1, 1, 1)))
-        self.event_list.append(Event(EVENT_DELAY, 10.0))
-        self.event_list.append(Event(EVENT_ENEMY, (1, 1, 1)))
-        self.event_list.append(Event(EVENT_DELAY, 10.0))
-        self.event_list.append(Event(EVENT_ENEMY, (1, 1, 1)))
-        self.event_list.append(Event(EVENT_DELAY, 10.0))
-        self.event_list.append(Event(EVENT_ENEMY, (1, 1, 1)))
+        self.player_main.addGreenItems(100)
+        f = open("event.list", "r").read()
+        s1 = f.split('\n')
+        s2 = []
+        for i in s1:
+            for j in i.split(' '):
+                if len(j):
+                    s2.append(j)
+        i = 0
+        while i < len(s2):
+            if s2[i] == "timer":
+                self.event_list.append(Event(EVENT_WAVE_TIMER, float(s2[i + 1])))
+                i += 2
+            else:
+                if s2[i] == "enemy":
+                    self.event_list.append(Event(EVENT_ENEMY, (int(s2[i + 1]), int(s2[i + 2]), int(s2[i + 3]))))
+                    i += 4
+                else:
+                    if s2[i] == "delay":
+                        self.event_list.append(Event(EVENT_DELAY, float(s2[i + 1])))
+                        i += 2
 
     def __rand_angles(self):
         return (random() * 2.0 * pi, random() * 2.0 * pi - pi)
