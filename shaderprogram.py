@@ -18,12 +18,10 @@ LIGHTING_FLAG_LOCATION = 32
 
 
 class ShaderProgram:
-    vertexShader = None
-    fragmentShader = None
-    programObject = None
-
     def __init__(self):
-        pass
+        self.vertexShader = None
+        self.fragmentShader = None
+        self.programObject = None
 
     def init(self, vertexShaderName, fragmentShaderName):
         self.vertexShader = Shader()

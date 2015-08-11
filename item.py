@@ -4,15 +4,11 @@ COLOR_GREEN = 2
 
 
 class Item:
-    position = None
-    color = None
-    count = 1
-    lifetime = 1.0
-
     def __init__(self, position, color, count):
         self.position = position
         self.color = color
         self.count = count
+        self.lifetime = 1.0
 
     def getPosition(self):
         return self.position

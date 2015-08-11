@@ -4,21 +4,20 @@ from random import *
 from player import Player
 from bull import Bull
 from event import *
-import sys
 
 
 class Game:
-    free_items = set()
-    player_main = Player()
-    enemies = set()
-    bulls = set()
-    sp = 0
-    wave_timer_flag = False
-    wave_timer_time = 0.0
-    event_delay = 0.0
-    event_list = []
-
-    def __init__(self):
+    def __init__(self, engine):
+        self.engine = engine
+        self.free_items = set()
+        self.player_main = Player()
+        self.enemies = set()
+        self.bulls = set()
+        self.sp = 0
+        self.wave_timer_flag = False
+        self.wave_timer_time = 0.0
+        self.event_delay = 0.0
+        self.event_list = []
         self.player_main.addRedItems(10)
         self.player_main.addBlueItems(10)
         self.player_main.addGreenItems(10)
@@ -126,7 +125,7 @@ class Game:
             target.setHealth(target.getHealth() - 0.2 * (2 ** (i.getPower() - t_def)))
             if target.getHealth() < 10.0 ** -5:
                 if target == self.player_main:
-                    sys.exit(0)
+                    self.engine.defeat()
                 if target in self.enemies:
                     self.enemies.remove(target)
             self.bulls.remove(i)

@@ -30,7 +30,6 @@ if __name__ == '__main__':
     engine = Engine(window)
     engine.setWindowHeight(height)
     engine.setWindowWidth(width)
-    engine.camera_on()
 
     def on_resize(window, width, height):
         engine.setWindowWidth(width)

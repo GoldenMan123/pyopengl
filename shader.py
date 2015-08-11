@@ -2,11 +2,9 @@ import OpenGL.GL as gl
 
 
 class Shader:
-    shaderType = None
-    shaderObject = None
-
     def __init__(self):
-        pass
+        self.shaderType = None
+        self.shaderObject = None
 
     def getShaderType(self):
         return self.shaderType

@@ -4,12 +4,11 @@ from numpy import *
 
 
 class Texture:
-    inited = False
-    texture_id = 0
-    width = 0
-    height = 0
-
     def __init__(self, texture_id):
+        self.inited = False
+        self.texture_id = 0
+        self.width = 0
+        self.height = 0
         self.texture_id = texture_id
 
     def load(self, filename):

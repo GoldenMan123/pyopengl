@@ -14,9 +14,16 @@ class Player:
     stamina = 0.0
 
     def __init__(self, power = 1, defence = 1, speed = 1):
+        self.position = array([0, 0, 0], 'f')
+        self.red_items = 0
+        self.blue_items = 0
+        self.green_items = 0
         self.power = power
         self.defence = defence
         self.speed = speed
+        self.reload = 0.0
+        self.health = 1.0
+        self.stamina = 0.0
 
     def getPosition(self):
         return self.position

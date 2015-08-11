@@ -4,33 +4,31 @@ from gui import GUI
 from objectquad import objectQuad
 from objectcube import objectCube
 from item import *
-from bull import Bull
 import OpenGL.GL as gl
 from glutils import *
 import glfw
+from random import *
+
+
+MODE_MENU = 0
+MODE_GAME = 1
 
 
 class Engine:
-    window = None
-    game = None
-    gui = None
-    quad = None
-    cube = None
-    target = None
-    target_display_pos = None
-    shoot = False
-    runtime = 0.0
-    cam_dir = array([0, 0, 1], 'f')
-    cam_up  = array([0, 1, 0], 'f')
-    cam_flag = False
-
     def __init__(self, window):
         self.window = window
-        self.game = Game()
+        self.game = None
         self.gui = GUI()
         self.quad = objectQuad()
         self.cube = objectCube()
+        self.target = None
+        self.target_display_pos = None
         self.runtime = 0.0
+        self.cam_dir = array([0, 0, 1], 'f')
+        self.cam_up = array([0, 1, 0], 'f')
+        self.cam_flag = False
+        self.mode = MODE_MENU
+        self.menu_items = set()
         self.gui.initTexture(0, "data/item.png")
         self.gui.initTexture(1, "data/aim.png")
         for i in range(10):
@@ -43,6 +41,8 @@ class Engine:
         self.gui.renderText(17, "data/mono.ttf", 256, "NEXT WAVE", (255, 255, 255, 255))
         self.gui.renderText(18, "data/mono.ttf", 256, ":", (255, 255, 255, 255))
         self.gui.initTexture(19, "data/radar.png")
+        self.gui.renderText(20, "data/mono.ttf", 256, "START", (255, 255, 255, 255))
+        self.__init_menu()
 
     def setWindowHeight(self, h):
         self.gui.setWindowHeight(h)
@@ -55,9 +55,10 @@ class Engine:
             glfw.set_cursor_pos(self.window, self.gui.window_width / 2, self.gui.window_height / 2)
 
     def camera_on(self):
-        self.cam_flag = True
-        glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_HIDDEN)
-        glfw.set_cursor_pos(self.window, self.gui.window_width / 2, self.gui.window_height / 2)
+        if self.mode == MODE_GAME:
+            self.cam_flag = True
+            glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_HIDDEN)
+            glfw.set_cursor_pos(self.window, self.gui.window_width / 2, self.gui.window_height / 2)
 
     def camera_off(self):
         self.cam_flag = False
@@ -73,6 +74,13 @@ class Engine:
         pass
 
     def shoot_on(self):
+        if self.mode == MODE_MENU:
+            x, y = glfw.get_cursor_pos(self.window)
+            x = float(x) / self.gui.getWindowWidth() * 2.0 * self.gui.aspect - self.gui.aspect
+            y = 1.0 - float(y) / self.gui.getWindowHeight() * 2.0
+            if x > -1 and x < 1 and y > -0.5 and y < 0.5:
+                self.__init_game()
+            return
         if self.cam_flag:
             self.shoot = True
         else:
@@ -96,6 +104,25 @@ class Engine:
     def shoot_off(self):
         self.shoot = False
 
+    def __init_menu(self):
+        self.game = None
+        self.camera_off()
+        self.mode = MODE_MENU
+
+    def __init_game(self):
+        self.game = Game(self)
+        self.target = None
+        self.target_display_pos = None
+        self.shoot = False
+        self.cam_dir = array([0, 0, 1], 'f')
+        self.cam_up  = array([0, 1, 0], 'f')
+        self.cam_flag = False
+        self.mode = MODE_GAME
+        self.camera_on()
+
+    def defeat(self):
+        self.__init_menu()
+
     def __process_camera(self):
         x, y = glfw.get_cursor_pos(self.window)
         dx = x - self.gui.window_width / 2.0
@@ -107,17 +134,24 @@ class Engine:
         self.cam_up  = normalize(cam_up)
         glfw.set_cursor_pos(self.window, self.gui.window_width / 2, self.gui.window_height / 2)
 
-    def __init_3d(self):
-        # Clear screen
+    def __clear_screen(self):
         gl.glClearColor(0.05, 0.05, 0.1, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT | gl.GL_STENCIL_BUFFER_BIT)
         gl.glViewport(0, 0, self.gui.window_width, self.gui.window_height)
         gl.glEnable(gl.GL_DEPTH_TEST)
-        # Calculate view and projection matrices
+
+    def __init_game_3d(self):
         self.gui.projectionMatrix = self.gui.perspective()
         self.gui.eye = self.game.getMainPlayer().getPosition()
         self.gui.cen = self.gui.eye + self.cam_dir
         self.gui.up  = self.cam_up
+        self.gui.viewMatrix = self.gui.lookAt()
+
+    def __init_menu_3d(self):
+        self.gui.projectionMatrix = self.gui.perspective()
+        self.gui.eye = array([0, 0, 0], 'f')
+        self.gui.cen = array([0, 0, 1], 'f')
+        self.gui.up  = array([0, 1, 0], 'f')
         self.gui.viewMatrix = self.gui.lookAt()
 
     def __draw_enemies(self):
@@ -444,11 +478,73 @@ class Engine:
             self.gui.sendMatrices()
             self.quad.draw()
 
-    def step(self, elapsedTime):
-        self.runtime += elapsedTime
+    def __process_menu_items(self, elapsedTime):
+        while len(self.menu_items) < 20:
+            r = randint(0, 2)
+            clr = COLOR_RED
+            if r == 1:
+                clr = COLOR_BLUE
+            if r == 2:
+                clr = COLOR_GREEN
+            rx = (random() * 2.0 - 1.0) * 25.0
+            ry = (random() * 2.0 - 1.0) * 25.0
+            rz = 100.0 * (1 + random())
+            self.menu_items.add(Item(array([rx, ry, rz], 'f'), clr, 1))
+        td = []
+        for i in self.menu_items:
+            i.getPosition()[2] -= elapsedTime * 100.0
+            if i.getPosition()[2] < 0:
+                td.append(i)
+        for i in td:
+            self.menu_items.remove(i)
+
+    def __draw_menu_items(self):
+        self.gui.bindTexture(0)
+        mi = sorted(self.menu_items, cmp=comparer(array([0, 0, 0], 'f')))
+        for i in mi:
+            pos_dir = normalize(i.getPosition())
+            base_dir = array([0, 0, 1], 'f')
+            if abs(dot(base_dir, pos_dir)) > 1 - (10.0 ** -5):
+                rot_axis = array([0, 1, 0], 'f')
+                if dot(base_dir, pos_dir) > 0:
+                    rot_angle = 0
+                else:
+                    rot_angle = 180
+            else:
+                rot_axis = cross(pos_dir, base_dir)
+                rot_angle = 180 - 180 * arccos(dot(pos_dir, base_dir)) / pi
+            self.gui.modelMatrix = mul(translate(i.getPosition()),
+                rotate(rot_angle, rot_axis))
+            self.gui.sendMatrices()
+            if i.getColor() == COLOR_RED:
+                self.gui.setColor(array([1, 0, 0, i.getLifetime()], 'f'))
+            if i.getColor() == COLOR_BLUE:
+                self.gui.setColor(array([0, 0, 1, i.getLifetime()], 'f'))
+            if i.getColor() == COLOR_GREEN:
+                self.gui.setColor(array([0, 1, 0, i.getLifetime()], 'f'))
+            self.quad.draw()
+
+    def __menu_draw_start(self):
+        self.gui.modelMatrix = scale(array([2, 1, 1], 'f'))
+        self.gui.setColor(array([1, 1, 0, sin(10 * self.runtime) * 0.25 + 0.75], 'f'))
+        self.gui.bindTexture(20)
+        self.gui.sendMatrices()
+        self.quad.draw()
+
+    def __menu_step(self, elapsedTime):
+        self.__process_menu_items(elapsedTime)
+        self.__clear_screen()
+        self.__init_menu_3d()
+        self.__draw_menu_items()
+        self.__init_2d()
+        self.__menu_draw_start()
+
+    def __game_step(self, elapsedTime):
         # Process logic
         self.game.move(elapsedTime, self.cam_dir)
         self.game.process(elapsedTime)
+        if not self.game:
+            return
         if self.cam_flag:
             self.__process_camera()
         # Define target
@@ -471,7 +567,8 @@ class Engine:
         if self.shoot and self.target:
             self.game.shoot(self.target, self.cam_up)
         # Redraw
-        self.__init_3d()
+        self.__clear_screen()
+        self.__init_game_3d()
         self.__draw_enemies()
         self.__draw_items()
         self.__draw_bulls()
@@ -489,3 +586,10 @@ class Engine:
         if self.game.getWaveTimerFlag():
             self.__draw_wave_timer(self.game.getWaveTimerTime())
         self.__draw_radar()
+
+    def step(self, elapsedTime):
+        self.runtime += elapsedTime
+        if self.mode == MODE_MENU:
+            self.__menu_step(elapsedTime)
+        if self.mode == MODE_GAME:
+            self.__game_step(elapsedTime)

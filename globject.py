@@ -11,14 +11,11 @@ class VertexData:
 
 
 class GLObject:
-    pData = None
-    pIndices = None
-
-    vao = None
-    vbo = None
-
     def __init__(self):
-        pass
+        self.pData = None
+        self.pIndices = None
+        self.vao = None
+        self.vbo = None
 
     def release(self):
         if self.vbo:
