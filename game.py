@@ -26,6 +26,10 @@ class Game:
         s1 = f.split('\n')
         s2 = []
         for i in s1:
+            if not len(i):
+                continue
+            if i[0] == '#':
+                continue
             for j in i.split(' '):
                 if len(j):
                     s2.append(j)
