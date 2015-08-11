@@ -8,6 +8,7 @@ import OpenGL.GL as gl
 from glutils import *
 import glfw
 from random import *
+from locale import Locale
 
 
 MODE_MENU = 0
@@ -29,19 +30,20 @@ class Engine:
         self.cam_flag = False
         self.mode = MODE_MENU
         self.menu_items = set()
+        self.locale = Locale()
         self.gui.initTexture(0, "data/item.png")
         self.gui.initTexture(1, "data/aim.png")
         for i in range(10):
             self.gui.renderText(2 + i, "data/mono.ttf", 256, str(i), (255, 255, 255, 255))
-        self.gui.renderText(12, "data/mono.ttf", 256, "STR:", (255, 255, 255, 255))
-        self.gui.renderText(13, "data/mono.ttf", 256, "DEF:", (255, 255, 255, 255))
-        self.gui.renderText(14, "data/mono.ttf", 256, "SPD:", (255, 255, 255, 255))
-        self.gui.renderText(15, "data/mono.ttf", 256, "SHIELD", (255, 255, 255, 255))
+        self.gui.renderText(12, "data/mono.ttf", 256, self.locale.get(0) + ":", (255, 255, 255, 255))
+        self.gui.renderText(13, "data/mono.ttf", 256, self.locale.get(1) + ":", (255, 255, 255, 255))
+        self.gui.renderText(14, "data/mono.ttf", 256, self.locale.get(2) + ":", (255, 255, 255, 255))
+        self.gui.renderText(15, "data/mono.ttf", 256, self.locale.get(3), (255, 255, 255, 255))
         self.gui.renderText(16, "data/mono.ttf", 256, "+", (255, 255, 255, 255))
-        self.gui.renderText(17, "data/mono.ttf", 256, "NEXT WAVE", (255, 255, 255, 255))
+        self.gui.renderText(17, "data/mono.ttf", 256, self.locale.get(4), (255, 255, 255, 255))
         self.gui.renderText(18, "data/mono.ttf", 256, ":", (255, 255, 255, 255))
         self.gui.initTexture(19, "data/radar.png")
-        self.gui.renderText(20, "data/mono.ttf", 256, "START", (255, 255, 255, 255))
+        self.gui.renderText(20, "data/mono.ttf", 256, self.locale.get(5), (255, 255, 255, 255))
         self.__init_menu()
 
     def setWindowHeight(self, h):
