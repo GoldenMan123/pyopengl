@@ -2,7 +2,13 @@ from globject import *
 
 
 class objectQuad(GLObject):
+    '''
+    Class objectQuad represents drawable quad
+    '''
     def __init__(self):
+        '''
+        Initialize quad object
+        '''
         GLObject.__init__(self)
         self.pData = []
         for i in range(4):

@@ -2,7 +2,13 @@ from globject import *
 
 
 class objectCube(GLObject):
+    '''
+    Class objectCube represents drawable cube
+    '''
     def __init__(self):
+        '''
+        Initialize cube object
+        '''
         GLObject.__init__(self)
         self.pData = []
         self.pIndices = []

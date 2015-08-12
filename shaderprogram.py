@@ -18,16 +18,32 @@ LIGHTING_FLAG_LOCATION = 32
 
 
 class ShaderProgram:
+    '''
+    Class ShaderProgram represents OpenGL shader program
+    '''
     def __init__(self):
+        '''
+        Initialize shader program
+        '''
+        # Initialize members
         self.vertexShader = None
         self.fragmentShader = None
         self.programObject = None
 
     def init(self, vertexShaderName, fragmentShaderName):
+        '''
+        Initialize shader program
+        @param vertexShaderName: vertex shader filename
+        @param fragmentShaderName: fragment shader filename
+        @return:
+        '''
+        # Initialize vertex shader
         self.vertexShader = Shader()
         self.vertexShader.readAndCompile(vertexShaderName, gl.GL_VERTEX_SHADER)
         self.fragmentShader = Shader()
+        # Initialize fragment shader
         self.fragmentShader.readAndCompile(fragmentShaderName, gl.GL_FRAGMENT_SHADER)
+        # Create shader program
         self.programObject = gl.glCreateProgram()
         gl.glAttachShader(self.programObject, self.vertexShader.getShaderObject())
         gl.glAttachShader(self.programObject, self.fragmentShader.getShaderObject())
@@ -35,4 +51,8 @@ class ShaderProgram:
         gl.glLinkProgram(self.programObject)
 
     def getProgramObject(self):
+        '''
+        Get program object
+        @return: program object
+        '''
         return self.programObject

@@ -4,14 +4,25 @@ from numpy import *
 
 
 class Texture:
+    '''
+    Class Texture represents OpenGL texture
+    '''
+
     def __init__(self, texture_id):
+        '''
+        Initialize texture
+        @param texture_id: texture id
+        '''
         self.inited = False
-        self.texture_id = 0
         self.width = 0
         self.height = 0
         self.texture_id = texture_id
 
     def load(self, filename):
+        '''
+        Load texture from file
+        @param filename: name of file
+        '''
         self.width, self.height, r, t = png.Reader(filename=filename).asRGBA8()
         arr = []
         for i in r:
@@ -31,6 +42,12 @@ class Texture:
         self.inited = True
 
     def load_raw(self, width, height, data):
+        '''
+        Load texture from array
+        @param width: width
+        @param height: height
+        @param data: data
+        '''
         self.width, self.height = width, height
         gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture_id)
         gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
@@ -46,7 +63,14 @@ class Texture:
         self.inited = True
 
     def bind(self):
+        '''
+        Bind texture
+        '''
         gl.glBindTexture(gl.GL_TEXTURE_2D, self.texture_id)
 
     def isInited(self):
+        '''
+        Get inited flag
+        @return: inited flag
+        '''
         return self.inited
