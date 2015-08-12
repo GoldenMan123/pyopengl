@@ -91,6 +91,11 @@ def normalize(x):
 
 
 def translate(v):
+    '''
+    Calculate translation matrix
+    @param v: translation vector
+    @return: translation matrix
+    '''
     result = identity(4, 'f')
     result[3][0] = v[0]
     result[3][1] = v[1]
@@ -99,6 +104,12 @@ def translate(v):
 
 
 def rotate(angle, axis):
+    '''
+    Calculate rotation matrix
+    @param angle: angle
+    @param axis: axis
+    @return: rotation matrix
+    '''
     result = identity(4, 'f')
     u = normalize(axis)
     a = angle * pi / 180.0
@@ -115,6 +126,11 @@ def rotate(angle, axis):
 
 
 def scale(s):
+    '''
+    Calculate scale matrix
+    @param s: scale
+    @return: scale matrix
+    '''
     result = identity(4, 'f')
     result[0][0] = s[0]
     result[1][1] = s[1]
