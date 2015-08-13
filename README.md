@@ -17,6 +17,10 @@ To install game you need to have `virtualenv` and `pip` packages installed.
 
 1. Run `install.sh`
 
+## Testing
+
+1. For test image rendering activate vitrualenv with `. ./bin/activate` command and run `python2.7 ./tests/sceneX.py` where X &mdash; scene number (1, 2 or 3).
+
 ## Running game
 
 1. Run `run.sh`
