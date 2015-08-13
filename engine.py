@@ -8,7 +8,7 @@ import OpenGL.GL as gl
 from glutils import *
 import glfw
 from random import *
-from locale import *
+from game_locale import *
 
 
 MODE_MENU = 0
