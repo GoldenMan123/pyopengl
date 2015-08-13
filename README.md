@@ -19,7 +19,9 @@ To install game you need to have `virtualenv` and `pip` packages installed.
 
 ## Testing
 
-1. For test image rendering activate vitrualenv with `. ./bin/activate` command and run `python2.7 ./tests/sceneX.py` where X &mdash; scene number (1, 2 or 3).
+1. First, activate virtualenv with `. ./bin/activate` command.
+2. To test image renderin run `python2.7 ./tests/sceneX.py` where X &mdash; scene number (1, 2 or 3).
+3. To test game logic run `py.test ./tests/test_logic.py`. You need to have `pytest` package installed.
 
 ## Running game
 
