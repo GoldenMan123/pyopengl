@@ -26,4 +26,5 @@ To install game you need to have `virtualenv` and `pip` packages installed.
 ## Running game
 
 1. Run `run.sh`
+2. If you want to change locale, set `LC_MESSAGES` enviroment variable. For russian, type `export LC_MESSAGES=ru_RU` in terminal, then run `run.sh`. 
 
