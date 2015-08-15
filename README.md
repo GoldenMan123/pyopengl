@@ -17,6 +17,15 @@ To install game you need to have `virtualenv` and `pip` packages installed.
 
 1. Run `install.sh`
 
+## Alternative installing (glfw + game, only for Linux x86_64)
+
+To install game you need to have `virtualenv` and `pip` packages installed. You needn't to clone this repository.
+
+1. Run `virtualenv .`
+2. Run `. ./bin/activate`
+3. Run `pip install PyOpenGL_game`
+4. To start then game run `pyopenglgame`
+
 ## Testing
 
 1. First, activate virtualenv with `. ./bin/activate` command.
@@ -27,4 +36,3 @@ To install game you need to have `virtualenv` and `pip` packages installed.
 
 1. Run `run.sh`
 2. If you want to change locale, set `LC_MESSAGES` enviroment variable. For russian, type `export LC_MESSAGES=ru_RU` in terminal, then run `run.sh`. 
-
