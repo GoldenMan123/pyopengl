@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, '.')
 from game import *
 
+
 class EngineGag:
     '''
     Gag for game defeat
