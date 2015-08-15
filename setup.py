@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(
-    name = "PyOpenGL game",
+    name = "PyOpenGL_game",
     version = "1.0",
     author = "Vladimir Zhukov",
     author_email = "zhvv117@gmail.com",
@@ -18,9 +18,9 @@ setuptools.setup(
     long_description= "Simple OpenGL game",
     classifiers=[
         "Development Status :: 3 - Alpha",
-        "Environment :: X11 Applications"
-        "Operating System :: POSIX :: Linux"
-        "Programming Language :: Python :: 2.7"
+        "Environment :: X11 Applications",
+        "Operating System :: POSIX :: Linux",
+        "Programming Language :: Python :: 2.7",
         "Topic :: Games/Entertainment",
         "License :: OSI Approved :: MIT License",
     ],

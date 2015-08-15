@@ -13,5 +13,5 @@ cp ./data/* ./PyOpenGL_game/data
 cp ./localization/*.po* ./PyOpenGL_game/localization
 mkdir -p ./PyOpenGL_game/localization/ru/LC_MESSAGES
 cp ./localization/ru/LC_MESSAGES/* ./PyOpenGL_game/localization/ru/LC_MESSAGES
-python2.7 setup.py bdist_wheel
-rm -rf ./PyOpenGL_game ./PyOpenGL_game.egg-info ./build
+python2.7 setup.py bdist_wheel register upload
+rm -rf ./PyOpenGL_game ./PyOpenGL_game.egg-info ./bild
