@@ -1,8 +1,9 @@
-import sys
-sys.path.insert(0, '/usr/local/lib')
-
-if __name__ == '__main__':
+def main():
+    import os
     import sys
+    os.chdir(os.path.dirname(__file__))
+    print os.path.dirname(__file__)
+
     import glfw
     import time
     from engine import Engine
@@ -83,3 +84,7 @@ if __name__ == '__main__':
         time.sleep(0.01)
 
     glfw.terminate()
+
+
+if __name__ == '__main__':
+    main()
