@@ -2,7 +2,6 @@ def main():
     import os
     import sys
     os.chdir(os.path.dirname(__file__))
-    print os.path.dirname(__file__)
 
     import glfw
     import time
