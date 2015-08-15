@@ -24,7 +24,7 @@ To install game you need to have `virtualenv` and `pip` packages installed. You 
 1. Run `virtualenv .`
 2. Run `. ./bin/activate`
 3. Run `pip install PyOpenGL_game`
-4. To start then game run `pyopenglgame`
+4. To start the game run `pyopenglgame`
 
 ## Testing
 
