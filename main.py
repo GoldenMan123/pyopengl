@@ -17,6 +17,7 @@ def main():
     # Create a windowed mode window and its OpenGL context
     window = glfw.create_window(640, 480, "Window Name", None, None)
     if not window:
+        print "Couldn't initialize OpenGL. Check that your OpenGL version >4.3."
         glfw.terminate()
         sys.exit()
 
