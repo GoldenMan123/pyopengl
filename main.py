@@ -13,6 +13,7 @@ def main():
 
     glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 4)
     glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
+    glfw.window_hint(glfw.SAMPLES, 16)
 
     # Create a windowed mode window and its OpenGL context
     window = glfw.create_window(640, 480, "Window Name", None, None)

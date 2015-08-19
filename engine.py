@@ -54,6 +54,8 @@ class Engine:
         self.gui.renderText(18, "data/mono.ttf", 256, ":", (255, 255, 255, 255))
         self.gui.initTexture(19, "data/radar.png")
         self.gui.renderText(20, "data/mono.ttf", 256, _("START"), (255, 255, 255, 255))
+        for i in range(1, 8):
+            self.gui.initTexture(20 + i, "data/e" + str(i) + ".png")
         # Setup menu
         self.__init_menu()
 
@@ -240,8 +242,6 @@ class Engine:
         '''
         Draw all game enemies
         '''
-        # Disable texturing
-        self.gui.bindTexture(-1)
         # Enable lighting
         self.gui.enableLighting()
         # Draw enemies
@@ -253,11 +253,11 @@ class Engine:
             # If enemy is current target then color is red else color is green
             # Also save for target it's display position to render additional information
             if i == self.target:
-                self.gui.setColor(array([1, 0, 0, 1], 'f'))
                 self.target_display_pos = v4_v3(mul_v(self.gui.projectionMatrix,
                     mul_v(self.gui.viewMatrix, v3_v4(i.getPosition()))))
-            else:
-                self.gui.setColor(array([0, 1, 0, 1], 'f'))
+            # Set color and texture
+            self.gui.setColor(array([1, 1, 1, 1], 'f'))
+            self.gui.bindTexture(20 + i.getTexture())
             # And draw!
             self.cube.draw()
         # Disable lighting

@@ -1,4 +1,5 @@
 from numpy import *
+from random import *
 
 
 class Player:
@@ -24,6 +25,7 @@ class Player:
         self.reload = 0.0
         self.health = 1.0
         self.stamina = 0.0
+        self.texture = randint(1, 7)
 
     def getPosition(self):
         '''
@@ -213,3 +215,10 @@ class Player:
         @param stamina: stamina
         '''
         self.stamina += stamina
+
+    def getTexture(self):
+        '''
+        Get texture number
+        @return: texture number
+        '''
+        return self.texture
