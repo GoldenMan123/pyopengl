@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name = "PyOpenGL_game",
-    version = "1.01",
+    version = "1.02",
     author = "Vladimir Zhukov",
     author_email = "zhvv117@gmail.com",
     description = "Simple OpenGL game",
